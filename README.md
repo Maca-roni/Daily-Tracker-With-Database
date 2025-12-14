@@ -105,32 +105,21 @@ Notes:
 
 ## Screenshots
 
-Add your screenshots in `static/img/screenshots/` and then replace the filenames below. Example placeholders:
-
-<div style="display:flex;gap:12px;flex-wrap:wrap;">
   <div style="width:320px">
-    ![Dashboard](static/img/dashboard.PNG)
-    <p style="text-align:center;margin:6px 0 14px 0">Dashboard</p>
+    <img src="static/img/mood.PNG" width="100%">
+    <p align="center">Mood</p>
   </div>
   <div style="width:320px">
-    ![Mood](static/img/mood.PNG)
-    <p style="text-align:center;margin:6px 0 14px 0">Mood</p>
+    <img src="static/img/habit.PNG" width="100%">
+    <p align="center">Habit</p>
   </div>
   <div style="width:320px">
-    ![Habit](static/img/habit.PNG)
-    <p style="text-align:center;margin:6px 0 14px 0">Habit</p>
+    <img src="static/img/tasks.PNG" width="100%">
+    <p align="center">Tasks</p>
   </div>
   <div style="width:320px">
-    ![Tasks](static/img/tasks.PNG)
-    <p style="text-align:center;margin:6px 0 14px 0">Tasks</p>
-  </div>
-  <div style="width:320px">
-    ![Journal](static/img/journal.PNG)
-    <p style="text-align:center;margin:6px 0 14px 0">Journal</p>
-  </div>
-  <div style="width:320px">
-    ![Settings](static/img/wood_panel.png)
-    <p style="text-align:center;margin:6px 0 14px 0">Settings</p>
+    <img src="static/img/journal.PNG" width="100%">
+    <p align="center">Journal</p>
   </div>
 </div>
 
