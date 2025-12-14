@@ -5,14 +5,14 @@
 
 <div align="center">
   <h1>🌿 Stardew Well-Being Farm</h1>
-  <p><em>A cozy personal tracker for habits, mood, tasks and journaling — Stardew-styled.</em></p>
+  <p><em>A cozy personal tracker for habits, mood, tasks and journaling, Stardew-styled.</em></p>
 </div>
 
 ---
 
 ## Overview
 
-Welcome to the Stardew Well-Being Farm — a small single-user Flask app that helps you track daily mood, cultivate habits, manage tasks, and keep a farm journal. The UI is intentionally styled with a pixel / Stardew-inspired theme, with calm colors and playful icons to make habit-building feel like tending a virtual farm. 🌾
+Welcome to the Stardew Well-Being Farm, a small single-user Flask app that helps you track daily mood, cultivate habits, manage tasks, and keep a farm journal. The UI is intentionally styled with a pixel / Stardew-inspired theme, with calm colors and playful icons to make habit-building feel like tending a virtual farm. 🌾
 
 - Mood tracking with energy levels and notes
 - Habit garden with simple logging
@@ -24,7 +24,7 @@ Welcome to the Stardew Well-Being Farm — a small single-user Flask app that he
 
 ## ERD (Entity Relationship Diagram)
 
-Below is a Mermaid ERD representing the main tables used by the application. Paste this into a Markdown viewer that supports Mermaid (e.g., GitHub) to render the diagram.
+Below is a Mermaid ERD representing the main tables used by the application.
 
 ```mermaid
 erDiagram
@@ -97,10 +97,6 @@ python app_fixed.py
 
 4. Open your browser at: http://localhost:5000
 
-Notes:
-- Place any uploaded images into `static/uploads/` (the upload endpoint will save near there).
-- To enable site music, put your music file at `static/audio/stardew_theme.mp3`.
-
 ---
 
 ## Screenshots
@@ -129,4 +125,4 @@ Notes:
 
 Thanks for using the Stardew Well-Being Farm — may your days be calm, your crops plentiful, and your habits steady. If you'd like, I can help add more pages, bundle assets (fonts/music), or wire settings to a user model.
 
-<p align="center">🍀 Happy farming! — The Tiny Farmhands</p>
+<p align="center">🍀 Happy farming!</p>
