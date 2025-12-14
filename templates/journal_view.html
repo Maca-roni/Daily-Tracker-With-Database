@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>📚 View Journal - Stardew Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stardew.css') }}">
+    <style>
+        .journal-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 18px; }
+        .journal-card { background: #fff8ea; border: 4px solid #cc9a61; padding: 16px; border-radius: 12px; box-shadow: inset 0 0 8px rgba(0,0,0,0.05); }
+        .journal-card .meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+        .journal-card .content { white-space: pre-wrap; color:#5a3e28; margin-bottom:8px; }
+        .journal-card img.entry-image { max-width:100%; border:3px solid #e0c7a6; border-radius:8px; margin-top:8px; display:block; }
+        .card-actions { display:flex; gap:8px; }
+        .modal { position:fixed; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; padding:20px; }
+        .modal-content { background:#fff8ea; border:6px solid #b88247; padding:18px; width:100%; max-width:720px; border-radius:10px; }
+        .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
+        @media (max-width:600px){ .modal-content{padding:12px;} }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel">
+            <div class="season-indicator">Journal</div>
+            <div class="panel-content">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <h2 style="margin:0;">📚 Your Journal Entries</h2>
+                    <div>
+                        <a class="nav-btn" href="{{ url_for('dashboard') }}">↩ Dashboard</a>
+                        <a class="nav-btn" href="{{ url_for('journal') }}">✏️ Add Entry</a>
+                    </div>
+                </div>
+
+                <div id="journal-list" class="journal-list">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="edit-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3 id="modal-title">Edit Entry</h3>
+            <div>
+                <label for="edit-date">📅 Date</label>
+                <input type="date" id="edit-date" />
+            </div>
+            <div style="margin-top:8px;">
+                <label for="edit-content">✍️ Content</label>
+                <textarea id="edit-content" rows="6" style="width:100%;"></textarea>
+            </div>
+            <div style="margin-top:8px;">
+                <label for="edit-image">📤 Replace Image (optional)</label>
+                <input type="file" id="edit-image" accept="image/*" />
+                <div id="existing-image" style="margin-top:8px;"> </div>
+            </div>
+
+            <div class="modal-actions">
+                <button id="cancel-edit" class="farm-btn harvest-btn" type="button">Cancel</button>
+                <button id="save-edit" class="farm-btn" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let journalEntries = [];
+        let editingEntryId = null;
+
+        async function fetchEntries() {
+            try {
+                const res = await fetch('/api/journal');
+                const data = await res.json();
+                if (data.success) {
+                    journalEntries = data.entries || [];
+                    renderJournalList();
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function renderJournalList() {
+            const list = document.getElementById('journal-list');
+            list.innerHTML = '';
+            if (!journalEntries.length) {
+                list.innerHTML = '<div class="journal-card">No entries yet.</div>';
+                return;
+            }
+
+            journalEntries.forEach(entry => {
+                const card = document.createElement('div');
+                card.className = 'journal-card';
+
+                const date = entry.entry_date || (entry.created_at && entry.created_at.split('T')[0]) || '';
+                const meta = document.createElement('div');
+                meta.className = 'meta';
+                meta.innerHTML = `<div>📅 ${date}</div>`;
+
+                const actions = document.createElement('div');
+                actions.className = 'card-actions';
+                const editBtn = document.createElement('button'); editBtn.className='farm-btn'; editBtn.textContent='✏️ Edit';
+                editBtn.onclick = () => openEditModal(entry);
+                const delBtn = document.createElement('button'); delBtn.className='farm-btn harvest-btn'; delBtn.textContent='🗑️ Delete';
+                delBtn.onclick = () => deleteEntry(entry.journal_id);
+                actions.appendChild(editBtn); actions.appendChild(delBtn);
+
+                meta.appendChild(actions);
+                card.appendChild(meta);
+
+                const content = document.createElement('div'); content.className='content'; content.textContent = entry.content || '';
+                card.appendChild(content);
+
+                if (entry.stickers && entry.stickers.length > 0) {
+                    const img = document.createElement('img'); img.className='entry-image'; img.src = entry.stickers[0];
+                    card.appendChild(img);
+                }
+
+                list.appendChild(card);
+            });
+        }
+
+        function openEditModal(entry) {
+            editingEntryId = entry.journal_id;
+            document.getElementById('edit-date').value = entry.entry_date || (entry.created_at && entry.created_at.split('T')[0]) || '';
+            document.getElementById('edit-content').value = entry.content || '';
+            const existing = document.getElementById('existing-image');
+            existing.innerHTML = '';
+            if (entry.stickers && entry.stickers.length > 0) {
+                const im = document.createElement('img'); im.src = entry.stickers[0]; im.className='entry-image'; existing.appendChild(im);
+            }
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        document.getElementById('cancel-edit').addEventListener('click', () => {
+            document.getElementById('edit-modal').style.display = 'none';
+            editingEntryId = null;
+            document.getElementById('edit-image').value = '';
+        });
+
+        document.getElementById('save-edit').addEventListener('click', async () => {
+            const content = document.getElementById('edit-content').value;
+            const entry_date = document.getElementById('edit-date').value || null;
+            const imageInput = document.getElementById('edit-image');
+
+            const payload = { content, entry_date, stickers: [] };
+
+            // If user uploaded a new image, upload first
+            if (imageInput.files && imageInput.files[0]) {
+                try {
+                    const form = new FormData(); form.append('image', imageInput.files[0]);
+                    const up = await fetch('/api/journal/upload', { method: 'POST', body: form });
+                    const upData = await up.json();
+                    if (upData.success && upData.url) payload.stickers.push(upData.url);
+                } catch (e) { console.error('upload failed', e); }
+            }
+
+            try {
+                const res = await fetch(`/api/journal/${editingEntryId}`, {
+                    method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('edit-modal').style.display = 'none';
+                    editingEntryId = null;
+                    await fetchEntries();
+                } else {
+                    alert(data.error || 'Failed to save');
+                }
+            } catch (e) { console.error(e); alert('Error saving entry'); }
+        });
+
+        async function deleteEntry(id) {
+            if (!confirm('Delete this entry?')) return;
+            try {
+                const res = await fetch(`/api/journal/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) await fetchEntries(); else alert(data.error || 'Delete failed');
+            } catch (e) { console.error(e); }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', fetchEntries);
+    </script>
+</body>
+</html>
+

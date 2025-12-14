@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/stardew.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+    <title>🌿 Stardew Valley Well-Being Farm</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="panel">
+        
+        <div class="farm-decoration decoration-1">🌻</div>
+        <div class="farm-decoration decoration-2">🌾</div>
+        <div class="farm-decoration decoration-3">🌲</div>
+        <div class="farm-decoration decoration-4">🍂</div>
+        
+        
+        <div class="season-indicator" id="seasonIndicator">Spring</div>
+        
+        <div class="panel-content">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <h1 class="title">🌿 Stardew Well-Being Farm</h1>
+                            <div style="font-family: 'Pixelify Sans', monospace;">
+                                {% if current_user %}
+                                    <span style="margin-right:12px;color:var(--text-muted)">Signed in: <strong>{{ current_user.name }}</strong></span>
+                                    <a class="nav-btn" href="/logout">Log out</a>
+                                {% else %}
+                                    <a class="nav-btn" href="/login">Log in</a>
+                                    <a class="nav-btn" href="/register">Sign up</a>
+                                {% endif %}
+                            </div>
+                        </div>
+            
+            
+            <div class="farm-info">
+                <div class="farm-date">
+                    <span class="date-label">Farm Date</span>
+                    <span id="current-date">Loading...</span>
+                    <br>
+                    <span id="current-time"></span>
+                </div>
+                <div class="farm-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="mood-streak">0</span>
+                        <span class="stat-label">Day Streak</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="habits-done">0</span>
+                        <span class="stat-label">Habits Today</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="tasks-done">0</span>
+                        <span class="stat-label">Tasks Done</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="daily-wisdom">
+                <p id="wisdom-text">"Every day is a new beginning. Take a deep breath and start again."</p>
+                <small>- Stardew Valley Wisdom</small>
+            </div>
+            
+            
+            <div class="menu-grid">
+                <a class="menu-btn" href="/mood">
+                    <span class="menu-icon">😊</span>
+                    <span class="menu-text">Mood Tracker</span>
+                    <span class="menu-desc">Log your daily feelings</span>
+                </a>
+                
+                <a class="menu-btn" href="/habits">
+                    <span class="menu-icon">🌱</span>
+                    <span class="menu-text">Habit Garden</span>
+                    <span class="menu-desc">Grow daily routines</span>
+                </a>
+                
+                <a class="menu-btn" href="/tasks">
+                    <span class="menu-icon">📝</span>
+                    <span class="menu-text">Farm Tasks</span>
+                    <span class="menu-desc">Daily chores & goals</span>
+                </a>
+                
+                <a class="menu-btn" href="/journal">
+                    <span class="menu-icon">📓</span>
+                    <span class="menu-text">Farm Journal</span>
+                    <span class="menu-desc">Write your thoughts</span>
+                </a>
+            </div>
+            
+            
+            <div class="farm-controls">
+                <a href="/settings" class="nav-btn">
+                    <span>⚙️</span> Farm Settings
+                </a>
+                <a href="/stats" class="nav-btn">
+                    <span>📊</span> Farm Statistics
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ====================
+    // FARM UTILITIES
+    // ====================
+    
+    // Update date and time
+    function updateFarmDateTime() {
+        const now = new Date();
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+        
+        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', dateOptions);
+        document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', timeOptions);
+    }
+    
+    // Stardew Valley seasons based on real month
+    function getSeason() {
+        const month = new Date().getMonth();
+        if (month >= 2 && month <= 4) return "Spring 🌸";
+        if (month >= 5 && month <= 7) return "Summer ☀️";
+        if (month >= 8 && month <= 10) return "Fall 🍂";
+        return "Winter ❄️";
+    }
+    
+    // Stardew Valley wisdom quotes
+    const farmWisdom = [
+        "Just like crops, good habits need daily watering.",
+        "Take care of your farm, and your farm will take care of you.",
+        "Every small harvest is worth celebrating.",
+        "Patience is the farmer's greatest tool.",
+        "Some days you plant, some days you water, but every day you grow.",
+        "Your mental health garden needs tending too.",
+        "A well-kept journal is like a well-tended field.",
+        "Small consistent efforts yield the biggest harvests.",
+        "Don't forget to rest - even fields need fallow seasons.",
+        "Your feelings are valid, just like every crop in your field."
+    ];
+    
+    // Random farm stats (you'll replace with real data later)
+    function updateFarmStats() {
+        // These would come from your backend in real implementation
+        document.getElementById('mood-streak').textContent = localStorage.getItem('moodStreak') || '0';
+        document.getElementById('habits-done').textContent = localStorage.getItem('todayHabits') || '0';
+        document.getElementById('tasks-done').textContent = localStorage.getItem('todayTasks') || '0';
+    }
+    
+    // Initialize farm
+    function initializeFarm() {
+        // Set date and time
+        updateFarmDateTime();
+        setInterval(updateFarmDateTime, 60000);
+        
+        // Set season
+        document.getElementById('seasonIndicator').textContent = getSeason();
+        
+        // Set random wisdom
+        const randomWisdom = farmWisdom[Math.floor(Math.random() * farmWisdom.length)];
+        document.getElementById('wisdom-text').textContent = `"${randomWisdom}"`;
+        
+        // Update stats
+        updateFarmStats();
+        
+        // Add click animations to menu buttons
+        document.querySelectorAll('.menu-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                this.classList.add('clicking');
+                setTimeout(() => {
+                    this.classList.remove('clicking');
+                }, 300);
+            });
+        });
+        
+        // Play gentle farm sound on menu hover (optional)
+        document.querySelectorAll('.menu-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                // Optional: Add gentle sound effect here
+            });
+        });
+    }
+    
+    // Load farm when page is ready
+    document.addEventListener('DOMContentLoaded', initializeFarm);
+</script>
+
+
+<script src="/static/js/music.js"></script>
+
+<style>
+    /* Click animation for buttons */
+    .menu-btn.clicking {
+        animation: farmClick 0.3s ease;
+    }
+    
+    @keyframes farmClick {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0); }
+    }
+</style>
+
+</body>
+</html>

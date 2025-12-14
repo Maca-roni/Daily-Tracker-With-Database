@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Dashboard</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('habits') }}">Habits</a>
+            <a href="{{ url_for('tasks') }}">Tasks</a>
+            <a href="{{ url_for('journal') }}">Journal</a>
+            <a href="{{ url_for('mood') }}">Mood</a>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Summary</h2>
+            
+        </section>
+    </main>
+</body>
+</html>
+

@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/stardew.css">
+    <title>Farm Statistics</title>
+</head>
+<body>
+<div class="container">
+    <div class="panel">
+        <div class="panel-content">
+            <h1 class="title">📊 Farm Statistics</h1>
+            <p class="subtitle">Overview of your mood, habits, tasks and journal activity.</p>
+
+            <div id="stats-cards" class="stats-grid">
+                
+            </div>
+
+            <div id="table-view" style="display:none; margin-top:16px;">
+                <h3>Database View</h3>
+                <div id="table-contents"></div>
+            </div>
+
+            <div style="margin-top:18px; display:flex; gap:8px; align-items:center;">
+                <button id="refreshBtn" class="btn">Refresh</button>
+                <label style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+                    <span id="toggleEmoji" style="cursor:pointer;">🔁</span>
+                    <input type="checkbox" id="toggleTable"> Table View
+                </label>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+async function fetchStats(){
+    try{
+        const res = await fetch('/api/farm/stats');
+        const data = await res.json();
+        if(!data.success) return;
+        renderStats(data.stats);
+    }catch(e){
+        console.error(e);
+    }
+}
+
+function makeCard(title, value, desc){
+    const el = document.createElement('div');
+    el.className = 'stat-card';
+    el.innerHTML = `<h4>${title}</h4><div class="stat-value">${value}</div><div class="muted">${desc||''}</div>`;
+    return el;
+}
+
+function renderStats(s){
+    const container = document.getElementById('stats-cards');
+    container.innerHTML = '';
+    container.appendChild(makeCard('Mood Entries', s.total_moods, 'Recent moods shown below'));
+    container.appendChild(makeCard('Habits', s.total_habits, `Completed today: ${s.completed_habits_today}`));
+    container.appendChild(makeCard('Tasks', s.total_tasks, `Completed: ${s.completed_tasks}`));
+    container.appendChild(makeCard('Journal Entries', s.total_journal, 'Latest journal entries'));
+
+    // table view contents
+    const tableContents = document.getElementById('table-contents');
+    tableContents.innerHTML = '';
+
+    const moodTable = createSimpleTable('mood', ['mood_id','mood','energy_level','log_date'], s.recent_moods || []);
+    tableContents.appendChild(moodTable);
+
+    const journalTable = createSimpleTable('journal', ['journal_id','entry_date','content'], s.recent_journal || []);
+    tableContents.appendChild(journalTable);
+}
+
+function createSimpleTable(name, cols, rows){
+    const wrapper = document.createElement('div');
+    wrapper.style.marginTop = '12px';
+    const title = document.createElement('h4'); title.textContent = name; wrapper.appendChild(title);
+    const table = document.createElement('table');
+    table.className = 'simple-table';
+    const thead = document.createElement('thead');
+    const tr = document.createElement('tr');
+    cols.forEach(c=>{ const th = document.createElement('th'); th.textContent = c; tr.appendChild(th); });
+    thead.appendChild(tr); table.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    rows.forEach(r=>{
+        const tr = document.createElement('tr');
+        cols.forEach(c=>{
+            const td = document.createElement('td'); td.textContent = (r[c]!==undefined && r[c]!==null)? r[c] : '';
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrapper.appendChild(table);
+    return wrapper;
+}
+
+// toggle
+document.addEventListener('DOMContentLoaded', ()=>{
+    document.getElementById('refreshBtn').addEventListener('click', fetchStats);
+    const toggle = document.getElementById('toggleTable');
+    toggle.addEventListener('change', (e)=>{
+        document.getElementById('table-view').style.display = e.target.checked ? 'block' : 'none';
+    });
+    document.getElementById('toggleEmoji').addEventListener('click', ()=>{
+        const t = document.getElementById('toggleTable'); t.checked = !t.checked; t.dispatchEvent(new Event('change'));
+    });
+    fetchStats();
+});
+</script>
+
+<style>
+.container{max-width:980px;margin:24px auto}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+.stat-card{background:rgba(255,255,255,0.04);padding:12px;border-radius:8px}
+.stat-card h4{margin:0 0 8px}
+.stat-value{font-size:20px;font-weight:700}
+.simple-table{width:100%;border-collapse:collapse;margin-top:8px}
+.simple-table th, .simple-table td{border:1px solid rgba(255,255,255,0.06);padding:6px;text-align:left}
+.muted{color:rgba(255,255,255,0.6);font-size:12px}
+.btn{padding:8px 12px;border-radius:6px;border:none;background:#6a994e;color:#fff;cursor:pointer}
+</style>
+
+
+<script src="/static/js/music.js"></script>
+
+</body>
+</html>

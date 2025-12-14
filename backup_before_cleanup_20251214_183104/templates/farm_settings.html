@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/stardew.css">
+    <title>Farm Settings</title>
+</head>
+<body>
+<div class="container">
+    <div class="panel">
+        <div class="panel-content">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                <button id="backBtn" class="btn" style="background:linear-gradient(145deg,#e0c7a6,#d4b48a); color:var(--btn-text); border:3px solid var(--btn-border);">◀ Back</button>
+                <h1 class="title" style="margin:0;">⚙️ Farm Settings</h1>
+            </div>
+            <p class="subtitle">Customize theme, UI scale and volume.</p>
+
+            
+
+            <div style="margin-top:12px;">
+                <label>UI Scale: <span id="scaleLabel">100%</span></label>
+                <input id="uiScale" type="range" min="50" max="150" value="100">
+            </div>
+
+            <div style="margin-top:12px;">
+                <label>Volume: <span id="volLabel">80%</span></label>
+                <input id="volume" type="range" min="0" max="100" value="80">
+            </div>
+
+            <div style="margin-top:18px; display:flex; gap:8px;">
+                <button id="saveBtn" class="btn">Save</button>
+                <button id="resetBtn" class="btn" style="background:#c94c4c;">Reset</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// Color presets removed per user request
+
+function applySettings(s){
+    if(!s) s = getSettings();
+    // Only apply scale and volume settings (color presets/dark mode removed)
+    document.body.style.zoom = (s.scale || 100) + '%';
+}
+
+function getSettings(){
+    try{ return JSON.parse(localStorage.getItem('farmSettings')) || {}; }catch(e){return{}};
+}
+
+function saveSettings(s){ localStorage.setItem('farmSettings', JSON.stringify(s)); applySettings(s); }
+
+function buildUI(){
+    // removed color swatches and dark mode handlers
+
+    document.getElementById('uiScale').addEventListener('input', (e)=>{
+        document.getElementById('scaleLabel').textContent = e.target.value + '%';
+        // don't auto-save on slide; update preview only
+        document.body.style.zoom = e.target.value + '%';
+    });
+
+    document.getElementById('volume').addEventListener('input', (e)=>{
+        document.getElementById('volLabel').textContent = e.target.value + '%';
+        // update live for audio player if present
+        try{ const a = window.bgMusic || document.getElementById('bgMusic'); if(a) a.volume = Number(e.target.value)/100; }catch(e){}
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', ()=>{
+        const s = getSettings();
+        s.scale = Number(document.getElementById('uiScale').value);
+        s.volume = Number(document.getElementById('volume').value);
+        saveSettings(s);
+        // set quick visual feedback
+        const btn = document.getElementById('saveBtn');
+        const old = btn.textContent;
+        btn.textContent = 'Saved';
+        setTimeout(()=> btn.textContent = old, 1200);
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', ()=>{ 
+        localStorage.removeItem('farmSettings');
+        updateUIFromSettings();
+    });
+
+    document.getElementById('backBtn').addEventListener('click', ()=>{ window.history.back(); });
+}
+
+function updateUIFromSettings(){
+    const s = getSettings();
+    document.getElementById('uiScale').value = s.scale || 100;
+    document.getElementById('scaleLabel').textContent = (s.scale || 100) + '%';
+    document.getElementById('volume').value = (s.volume!==undefined? s.volume:80);
+    document.getElementById('volLabel').textContent = (s.volume!==undefined? s.volume:80) + '%';
+    applySettings(s);
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{ buildUI(); updateUIFromSettings(); });
+</script>
+
+<style>
+.container{max-width:820px;margin:24px auto}
+.swatch{cursor:pointer;border-radius:6px}
+.btn{padding:8px 12px;border-radius:6px;border:none;background:#6a994e;color:#fff;cursor:pointer}
+</style>
+
+</body>
+</html>
+
+<script src="/static/js/music.js"></script>

@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📓 Journal - Stardew Well-Being Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stardew.css') }}">
+    <style>
+       
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel">
+            <div class="farm-decoration decoration-1">📓</div>
+            <div class="farm-decoration decoration-2">✏️</div>
+            <div class="farm-decoration decoration-3">📝</div>
+            <div class="farm-decoration decoration-4">📖</div>
+            
+            <div class="season-indicator">Journal</div>
+            
+            <div class="panel-content">
+                <div class="journal-container">
+                    <h1 class="journal-title">📓 Stardew Journal</h1>
+                    
+                    
+                    <div class="notebook-container">
+                        <div class="notebook-paper">
+                            <form id="journal-form" class="journal-form">
+                                <textarea 
+                                    id="journal-content" 
+                                    class="journal-textarea" 
+                                    placeholder="Write about your day in the valley... 🌾
+                                    
+What made you smile today?
+What are you grateful for?
+Any thoughts or feelings to record?"
+                                    rows="12"
+                                ></textarea>
+                                
+                                <div class="journal-meta">
+                                    <div class="journal-date">
+                                        <label for="journal-date">📅 Date:</label>
+                                        <input type="date" id="journal-date" />
+                                    </div>
+                                    
+                                    <div class="journal-actions">
+                                        <button type="submit" class="farm-btn" id="save-entry">
+                                            <span>💾</span> Save Entry
+                                        </button>
+                                        <button type="button" class="farm-btn harvest-btn" id="clear-form">
+                                            <span>🗑️</span> Clear
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        
+                        <div class="image-upload" style="margin-top: 10px;">
+                            <label for="image-upload">📤 Upload an image to attach to this entry (optional):</label>
+                            <input type="file" id="image-upload" accept="image/*" />
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="entries-section">
+                        <h2 class="entries-title">📚 Previous Entries</h2>
+                            <div class="entries-container" id="entries-container">
+                                
+                            </div>
+
+                            <div class="pagination">
+                                <button id="prev-page-bottom" class="farm-btn">◀ Previous</button>
+                                <span class="page-info" id="page-indicator-bottom">Page 1 of 1</span>
+                                <button id="next-page-bottom" class="farm-btn">Next ▶</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/journal.js') }}"></script>
+    <script>
+        // Minimal DOM wiring: connect pagination and fetch entries
+        document.addEventListener('DOMContentLoaded', () => {
+            const prevBottom = document.getElementById('prev-page-bottom');
+            const nextBottom = document.getElementById('next-page-bottom');
+            const prevTop = document.getElementById('prev-page');
+            const nextTop = document.getElementById('next-page');
+
+            if (prevBottom && prevTop) prevBottom.onclick = () => prevTop.click();
+            if (nextBottom && nextTop) nextBottom.onclick = () => nextTop.click();
+
+            if (typeof fetchEntries === 'function') fetchEntries();
+        });
+    </script>
+</body>
+</html>

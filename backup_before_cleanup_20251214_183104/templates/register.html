@@ -1,0 +1,44 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Register</title>
+  <link rel="stylesheet" href="/static/css/auth.css">
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="auth-panel">
+    <h2>Create an account</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, msg in messages %}
+          <li style="color: {% if category=='error' %}#b00020{% else %}#007700{% endif %};">{{ msg }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" action="{{ url_for('register') }}">
+      <label>Name</label>
+      <input type="text" name="name" required>
+      <label>Email</label>
+      <input type="email" name="email" required>
+      <label>Password</label>
+      <input type="password" name="password" required>
+      <label>Confirm Password</label>
+      <input type="password" name="confirm_password" required>
+      <div class="auth-actions">
+        <button class="btn-auth" type="submit">Create account</button>
+      </div>
+    </form>
+
+    <div class="auth-links">
+      <p>Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+    </div>
+    </div>
+  </div>
+</body>
+</html>
+

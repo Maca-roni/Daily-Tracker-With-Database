@@ -1,0 +1,117 @@
+﻿@import url('/static/css/stardew.css');
+
+
+body {
+  font-family: 'Pixelify Sans', 'Courier New', monospace;
+  background: url('/static/img/stardew_bg.png');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  image-rendering: pixelated;
+}
+
+.auth-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.auth-panel {
+  width: 420px;
+  max-width: calc(100% - 40px);
+  border-radius: 16px;
+  padding: 22px;
+  background: var(--panel-inner-bg, rgba(255,248,232,0.95));
+  border: 8px solid var(--panel-border, #8b5a2b);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+.auth-panel h2 {
+  margin: 0 0 14px 0;
+  text-align: center;
+  color: var(--title-color, #5d3b22);
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+.auth-panel form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-panel label {
+  font-weight: bold;
+  color: var(--text-primary, #5a3e28);
+  font-size: 14px;
+}
+
+.auth-panel input[type="text"],
+.auth-panel input[type="email"],
+.auth-panel input[type="password"] {
+  width: 95%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 4px solid var(--panel-inner-border, #cc9a61);
+  background: var(--card-bg, rgba(255,250,240,0.95));
+  color: var(--text-primary, #5a3e28);
+  font-size: 15px;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.6);
+}
+
+.auth-panel input:focus {
+  outline: none;
+  border-color: var(--btn-border, #b88247);
+  box-shadow: 0 0 0 6px rgba(184,130,71,0.08);
+}
+
+.auth-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.btn-auth {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 5px solid var(--btn-border, #b88247);
+  background: linear-gradient(145deg, var(--btn-bg-1, #ffe8bb), var(--btn-bg-2, #e8c78c));
+  color: var(--btn-text, #5a3e28);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-auth:hover {
+  transform: translateY(-2px);
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.auth-links a {
+  color: var(--title-color, #5d3b22);
+  text-decoration: underline;
+}
+
+
+.auth-flash {
+  margin: 8px 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 245, 230, 0.9);
+  border: 2px solid var(--card-border, #d6a560);
+  color: var(--text-primary, #5a3e28);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .auth-panel { padding: 16px; }
+  .auth-panel h2 { font-size: 22px; }
+}
+

@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Tasks - Stardew Valley Tracker</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tasks.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="panel">
+            
+            
+            <div class="farm-decoration decoration-1" aria-hidden="true"></div>
+            <div class="farm-decoration decoration-2">🌿</div>
+            <div class="farm-decoration decoration-3">🍃</div>
+            <div class="farm-decoration decoration-4">🌾</div>
+            
+            
+            <div class="season-indicator">📝 Tasks</div>
+            
+            
+            <div class="panel-header">
+                <div class="header-left">
+                    <button class="back-to-farm" onclick="window.location.href='/'">← Back to Farm</button>
+                    <h1>🌾 Farm Tasks</h1>
+                </div>
+                <div class="header-right">
+                    <span class="task-date" id="task-date"></span>
+                    <button class="add-btn" id="addTaskBtn">➕ Plant New Task</button>
+                </div>
+            </div>
+            
+            <div class="panel-content">
+                
+                <div class="quick-add">
+                    <input type="text" 
+                           id="quickAddTask" 
+                           placeholder="Quick plant a task (press Enter)...">
+                </div>
+
+                
+                <div class="task-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Tasks</span>
+                            <span class="stat-value" id="totalTasks">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Completed</span>
+                            <span class="stat-value" id="completedTasks">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Pending</span>
+                            <span class="stat-value" id="pendingTasks">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Completion Rate</span>
+                            <span class="stat-value" id="completionRate">0%</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="completionRateFill"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Today's Tasks</span>
+                            <span class="stat-value" id="todayTasks">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Overdue</span>
+                            <span class="stat-value" id="overdueTasks">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="task-filters">
+                    <button class="task-filter active" data-filter="all">All Tasks</button>
+                    <button class="task-filter" data-filter="active">Active</button>
+                    <button class="task-filter" data-filter="completed">Completed</button>
+                    <button class="task-filter" data-filter="overdue">Overdue ⚠️</button>
+                </div>
+
+                
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-state-icon">🌱</div>
+                    <h3>No tasks planted yet!</h3>
+                    <p>Your task garden is empty. Plant your first task to get started.</p>
+                    <button class="add-btn" id="addTaskBtnEmpty">Plant Your First Task</button>
+                </div>
+                
+                <div id="taskList" class="task-list">
+                    
+                </div>
+            
+                
+                <div class="action-buttons">
+                    <div class="action-btn-group">
+                        <button class="clear-completed-btn" onclick="TaskTracker.clearCompletedTasks()">
+                            🧹 Clear Completed
+                        </button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">📝 Plant New Task</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskName">Task Name</label>
+                        <input type="text" id="taskName" required 
+                               placeholder="What needs to be done?">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="taskDescription">Description (Optional)</label>
+                        <textarea id="taskDescription" 
+                                  placeholder="Add details, notes, or instructions..."
+                                  rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="taskDate">Due Date</label>
+                        <input type="date" id="taskDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="timerToggle">
+                            <span class="checkmark"></span>
+                            Set Timer ⏰ (Optional)
+                        </label>
+                        
+                        <div id="timerFields" style="display: none; margin-top: 10px;">
+                            <div class="timer-inputs">
+                                <input type="number" id="timerHours" min="0" max="24" 
+                                       placeholder="Hours" style="width: 80px;">
+                                <span>:</span>
+                                <input type="number" id="timerMinutes" min="0" max="59" 
+                                       placeholder="Minutes" style="width: 80px;">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="secondary-btn" id="closeTaskModal">Cancel</button>
+                        <button type="button" class="primary-btn" id="saveTask">Plant Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="{{ url_for('static', filename='js/tasks.js') }}"></script>
+    <script>
+        // Initialize empty state button
+        document.getElementById('addTaskBtnEmpty')?.addEventListener('click', function() {
+            TaskTracker.showAddTaskModal();
+        });
+        
+        // Clear completed tasks is handled by TaskTracker.clearCompletedTasks()
+    </script>
+</body>
+</html>

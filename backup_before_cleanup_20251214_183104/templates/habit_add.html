@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Habit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Add a New Habit</h1>
+        <nav>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('habits') }}">Habits</a>
+        </nav>
+    </header>
+    <main>
+        <form method="POST" action="{{ url_for('add_habit') }}">
+            <input type="text" name="habit_name" placeholder="Habit Name" required>
+            <button type="submit">Add Habit</button>
+        </form>
+    </main>
+</body>
+</html>
+

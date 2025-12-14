@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 Habit Garden - Stardew Farm</title>
+    <link rel="stylesheet" href="/static/css/stardew.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <div class="panel">
+        
+        <div class="farm-nav">
+            <a href="/" class="nav-btn back-to-farm">
+                <span>🏡</span> Back to Farm
+            </a>
+            <div class="farm-date-small">
+                <span id="habit-date">Loading...</span>
+            </div>
+        </div>
+        
+        <div class="panel-content">
+            <h1 class="title">🌱 Habit Garden</h1>
+            
+            
+            <div class="habit-stats">
+                <div class="stat-card">
+                    <span class="stat-icon">🌿</span>
+                    <div class="stat-value" id="totalHabits">0</div>
+                    <div class="stat-label">Total Habits</div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">✅</span>
+                    <div class="stat-value" id="completedToday">0/0</div>
+                    <div class="stat-label">Completed Today</div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">📊</span>
+                    <div class="stat-value" id="completionRate">0%</div>
+                    <div class="stat-label">Completion Rate</div>
+                    <div class="completion-progress">
+                        <div class="completion-bar">
+                            <div class="completion-fill" id="completionRateFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">🔥</span>
+                    <div class="stat-value" id="bestStreak">0</div>
+                    <div class="stat-label">Best Streak</div>
+                </div>
+            </div>
+            
+            
+            <div id="habitError" class="error-message" style="display: none;"></div>
+            
+            
+            <div class="habit-grid" id="habitGrid">
+                
+            </div>
+            
+            
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <span class="empty-state-icon">🌱</span>
+                <p>No habits planted yet!</p>
+                <p>Click "Plant New Habit" to start growing your routine.</p>
+            </div>
+            
+            
+            <div class="form-actions">
+                <button id="addHabitBtn" class="farm-btn harvest-btn">
+                    <span>🌿</span> Plant New Habit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="habitModal" class="modal">
+    <div class="modal-content panel">
+        <div class="panel-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">🌱 Plant New Habit</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <form id="habitForm" class="habit-form">
+                <div class="form-group">
+                    <label for="habitName">Habit Name</label>
+                    <input type="text" id="habitName" class="input-box" 
+                           placeholder="What habit do you want to grow?" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="habitDescription">Description (Optional)</label>
+                    <textarea id="habitDescription" class="farm-textarea" 
+                              placeholder="Why is this habit important to you?" 
+                              rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="habitFrequency">Frequency</label>
+                    <select id="habitFrequency" class="input-box">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" id="saveHabit" class="farm-btn">
+                        <span>🌿</span> Save Habit
+                    </button>
+                    <button type="button" id="closeHabitModal" class="farm-btn" 
+                            style="background: linear-gradient(to bottom, #e0c7a6 0%, #d4b48a 100%);">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/habits.js') }}"></script>
+
+<script>
+    // Set current date
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        const dateElement = document.getElementById('habit-date');
+        if (dateElement) {
+            dateElement.textContent = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
